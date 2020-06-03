@@ -18,6 +18,7 @@ const authRoutes = require("./routes/auth");
 const catRoutes = require("./routes/category");
 const productRoutes = require("./routes/product");
 const orderRoutes = require("./routes/order");
+const stripeRoutes = require("./routes/stripePayment");
 
 //Middlewares
 app.use(bodyParser.json());
@@ -44,6 +45,7 @@ app.use("/api", userRoutes);
 app.use("/api", catRoutes);
 app.use("/api", productRoutes);
 app.use("/api", orderRoutes);
+app.use("/api", stripeRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello from backend")
