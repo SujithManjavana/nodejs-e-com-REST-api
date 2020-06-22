@@ -91,7 +91,7 @@ exports.deleteProduct = (req, res) => {
 
 //update controller
 exports.updateProduct = (req, res) => {
-  console.log("BODY:::",req.body);
+  console.log("BODY:::", req.body);
   let form = formidable.IncomingForm();
   form.keepExtensions = true;
   form.parse(req, (err, fields, file) => {
@@ -130,8 +130,13 @@ exports.updateProduct = (req, res) => {
 
 exports.getAllProducts = (req, res) => {
   let limit = req.query.limit ? parseInt(req.query.limit) : 8;
-  let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
-  Product.find()
+  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+
+  getSearchQuery = () => {
+    return req.query.searchQuery ? { $text: { $search: req.query.searchQuery } } : {};
+  }
+
+  Product.find(getSearchQuery())
     .select("-photo")
     .populate("category")
     .sort([[sortBy, "asc"]])

@@ -40,5 +40,5 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+productSchema.index({ name: 'text', description: 'text'});// <= For text search
 module.exports = mongoose.model("Product", productSchema);
