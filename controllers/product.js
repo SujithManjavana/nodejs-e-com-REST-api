@@ -17,8 +17,8 @@ exports.getProductById = (req, res, next, id) => {
     });
 };
 
-exports.getSearchQuery=(req,res,next,query)=>{
-  req.query.searchQuery=query;
+exports.getSearchQuery = (req, res, next, query) => {
+  req.query.searchQuery = query;
   next();
 }
 
@@ -139,9 +139,9 @@ exports.getAllProducts = (req, res) => {
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
 
   const getSearchQuery = () => {
-    return req.query.searchQuery ? { $text: { $search: req.query.searchQuery } } : {};
+    return (req.query.searchQuery && req.query.searchQuery !== "*") ? { $text: { $search: req.query.searchQuery } } : {};
   }
-  
+
 
   Product.find(getSearchQuery())
     .select("-photo")
