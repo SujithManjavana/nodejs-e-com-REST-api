@@ -5,6 +5,7 @@ const {
   getAllProducts,
   createProduct,
   getProductById,
+  getSearchQuery,
   getProduct,
   photo,
   deleteProduct,
@@ -17,6 +18,7 @@ const { getUserById } = require("../controllers/user");
 //Params
 router.param("productId", getProductById);
 router.param("userId", getUserById);
+router.param("searchQuery", getSearchQuery);
 
 //Routes
 //CREATE
@@ -51,7 +53,7 @@ router.delete(
 );
 
 //listing
-router.get("/products", getAllProducts);
+router.get("/products/:searchQuery", getAllProducts);
 
 router.get("/products/categories", getAllUniqueCategories);
 

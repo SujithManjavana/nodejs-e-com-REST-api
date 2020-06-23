@@ -17,6 +17,11 @@ exports.getProductById = (req, res, next, id) => {
     });
 };
 
+exports.getSearchQuery=(req,res,next,query)=>{
+  req.query.searchQuery=query;
+  next();
+}
+
 exports.createProduct = (req, res) => {
   let form = formidable.IncomingForm();
   form.keepExtensions = true;
@@ -129,12 +134,14 @@ exports.updateProduct = (req, res) => {
 };
 
 exports.getAllProducts = (req, res) => {
+
   let limit = req.query.limit ? parseInt(req.query.limit) : 8;
   let sortBy = req.query.sortBy ? req.query.sortBy : "name";
 
-  getSearchQuery = () => {
+  const getSearchQuery = () => {
     return req.query.searchQuery ? { $text: { $search: req.query.searchQuery } } : {};
   }
+  
 
   Product.find(getSearchQuery())
     .select("-photo")
