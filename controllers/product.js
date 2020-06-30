@@ -21,6 +21,14 @@ exports.getSearchQuery = (req, res, next, query) => {
   req.query.searchQuery = query;
   next();
 }
+exports.getSortBy = (req, res, next, sortBy) => {
+  req.query.sortBy = sortBy;
+  next();
+}
+exports.getSortOrder = (req, res, next, sortOrder) => {
+  req.query.sortOrder = sortOrder;
+  next();
+}
 
 exports.createProduct = (req, res) => {
   let form = formidable.IncomingForm();
@@ -135,18 +143,25 @@ exports.updateProduct = (req, res) => {
 
 exports.getAllProducts = (req, res) => {
 
-  let limit = req.query.limit ? parseInt(req.query.limit) : 8;
-  let sortBy = req.query.sortBy ? req.query.sortBy : "name";
+  let limit = req.query.limit ? parseInt(req.query.limit) : 28;
 
   const getSearchQuery = () => {
-    return (req.query.searchQuery && req.query.searchQuery !== "*") ? { $text: { $search: req.query.searchQuery } } : {};
+    return (req.query.searchQuery && req.query.searchQuery !== "*") ? { $text: { $search: req.query.searchQuery } } : undefined;
+  }
+  const getSortOrder = () => {
+    return (req.query.sortOrder === 'asc') ? 'asc' : 'desc';
+  }
+
+  const getSortBy = () => {
+    const sortby = (req.query.sortBy && req.query.sortBy !== '') ? req.query.sortBy : 'createdAt';
+    return sortby;
   }
 
 
   Product.find(getSearchQuery())
     .select("-photo")
     .populate("category")
-    .sort([[sortBy, "asc"]])
+    .sort([[getSortBy(), getSortOrder()]])
     .limit(limit)
     .exec((err, products) => {
       if (err) {
