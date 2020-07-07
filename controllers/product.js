@@ -142,11 +142,11 @@ exports.updateProduct = (req, res) => {
 };
 
 exports.getAllProducts = (req, res) => {
-  let limit = req.query.limit ? parseInt(req.query.limit) : 15;
+  let limit = parseInt(req.query.limit) || 5;
   let searchQuery = (req.query.searchquery && req.query.searchquery !== "*") ?
     { $text: { $search: req.query.searchquery } } : undefined;
   let sortOrder = req.query.sortorder === 'asc' ? 'asc' : 'desc';
-  let sortBy = (req.query.sortby && req.query.sortby !== '') ? req.query.sortby : 'createdAt';
+  let sortBy = req.query.sortby || 'createdAt';
 
 
   Product.find(searchQuery)
