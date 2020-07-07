@@ -142,23 +142,37 @@ exports.updateProduct = (req, res) => {
 };
 
 exports.getAllProducts = (req, res) => {
-  let limit = parseInt(req.query.limit) || 5;
+  let page = parseInt(req.query.page) || 1;
+  let limit = parseInt(req.query.limit) < 50 ? parseInt(req.query.limit) : 5;
   let searchQuery = (req.query.searchquery && req.query.searchquery !== "*") ?
     { $text: { $search: req.query.searchquery } } : undefined;
   let sortOrder = req.query.sortorder === 'asc' ? 'asc' : 'desc';
   let sortBy = req.query.sortby || 'createdAt';
-
+  let skip = page <= 1 ? 0 : (page - 1) * limit;
 
   Product.find(searchQuery)
     .select("-photo")
     .populate("category")
     .sort([[sortBy, sortOrder]])
+    .skip(skip)
     .limit(limit)
     .exec((err, products) => {
       if (err) {
         return res.status(400).json({ error: "No products found" });
       }
-      return res.json(products);
+      Product.countDocuments(searchQuery).exec((count_error, count) => {
+        if (count_error) {
+          console.log("COUNT DOCUMENT ERROR", count_error);
+          return res.status(400).json({ error: "An error occured while counting the results" });
+        }
+        return res.json({
+          totalPages: Math.ceil(count / limit),
+          totalMatchfound: count,
+          page: page,
+          limit: limit,
+          products: products
+        });
+      });
     });
 };
 
