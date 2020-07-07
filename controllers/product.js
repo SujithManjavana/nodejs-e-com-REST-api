@@ -142,26 +142,17 @@ exports.updateProduct = (req, res) => {
 };
 
 exports.getAllProducts = (req, res) => {
-
-  let limit = req.query.limit ? parseInt(req.query.limit) : 28;
-
-  const getSearchQuery = () => {
-    return (req.query.searchQuery && req.query.searchQuery !== "*") ? { $text: { $search: req.query.searchQuery } } : undefined;
-  }
-  const getSortOrder = () => {
-    return (req.query.sortOrder === 'asc') ? 'asc' : 'desc';
-  }
-
-  const getSortBy = () => {
-    const sortby = (req.query.sortBy && req.query.sortBy !== '') ? req.query.sortBy : 'createdAt';
-    return sortby;
-  }
+  let limit = req.query.limit ? parseInt(req.query.limit) : 15;
+  let searchQuery = (req.query.searchquery && req.query.searchquery !== "*") ?
+    { $text: { $search: req.query.searchquery } } : undefined;
+  let sortOrder = req.query.sortorder === 'asc' ? 'asc' : 'desc';
+  let sortBy = (req.query.sortby && req.query.sortby !== '') ? req.query.sortby : 'createdAt';
 
 
-  Product.find(getSearchQuery())
+  Product.find(searchQuery)
     .select("-photo")
     .populate("category")
-    .sort([[getSortBy(), getSortOrder()]])
+    .sort([[sortBy, sortOrder]])
     .limit(limit)
     .exec((err, products) => {
       if (err) {

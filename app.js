@@ -48,7 +48,7 @@ app.use("/api", orderRoutes);
 app.use("/api", stripeRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Hello from backend")
+  res.send("Hello from backend!")
 });
 
 app.listen(port, () => {

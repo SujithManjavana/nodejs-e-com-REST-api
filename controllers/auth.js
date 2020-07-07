@@ -54,7 +54,8 @@ exports.signout = (req, res) => {
 exports.isSignedIn = exJwt({
   secret: process.env.SECRET,
   userProperty: "auth",
-  algorithms: ['RS256']
+  algorithms: ['RS256'] //for cross application authentication(like oauth) etc., you can prefer RSXXX types. 
+  //RS types are digital signatures, HS types are not.
 });
 
 //custom middlewares
