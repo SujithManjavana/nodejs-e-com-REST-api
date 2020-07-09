@@ -165,8 +165,12 @@ exports.getAllProducts = (req, res) => {
           console.log("COUNT DOCUMENT ERROR", count_error);
           return res.status(400).json({ error: "An error occured while counting the results" });
         }
+        let totalPages = Math.ceil(count / limit);
+        if (page > totalPages || page <= 0) {
+          return res.status(400).json({ error: "Invalid page number requested!" });
+        }
         return res.json({
-          totalPages: Math.ceil(count / limit),
+          totalPages: totalPages,
           totalMatchfound: count,
           page: page,
           limit: limit,
