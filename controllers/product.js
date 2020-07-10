@@ -157,7 +157,7 @@ exports.getAllProducts = (req, res) => {
     .skip(skip)
     .limit(limit)
     .exec((err, products) => {
-      if (err) {
+      if (err || !products || (products && products.length == 0)) {
         return res.status(400).json({ error: "No products found" });
       }
       Product.countDocuments(searchQuery).exec((count_error, count) => {
