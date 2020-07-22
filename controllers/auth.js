@@ -14,7 +14,15 @@ exports.signup = (req, res) => {
     if (err) {
       return res.status(400).json({ error: "Unable to save user" });
     }
-    return res.json({ name: usr.name, email: usr.email, id: usr._id });
+    //create token
+    const token = jwt.sign({ _id: usr._id }, process.env.SECRET);
+    //put token in cookie
+    res.cookie("token", token, { expire: new Date() + 9999 });
+
+    //send response to front end
+    const { _id, name, email, role } = usr;
+    return res.json({ token, user: { _id, name, email, role } });
+    //return res.json({ name: usr.name, email: usr.email, id: usr._id });
   });
 };
 
